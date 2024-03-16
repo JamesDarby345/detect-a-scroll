@@ -7,10 +7,10 @@ inference_test_output
 /checkpoints
 
 
-*.png
+# *.png
 *.json
 *.diff
-*.jpg
+# *.jpg
 !/projects/DensePose/doc/images/*.jpg
 
 # compilation and distribution
