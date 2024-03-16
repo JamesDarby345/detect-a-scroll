@@ -179,11 +179,22 @@ def read_image(file_name, format=None):
     """
     with PathManager.open(file_name, "rb") as f:
         image = Image.open(f)
+        print(image.format)
+        if image.format == "TIFF":
+             # Convert the image to a numpy array
+            img_array = np.array(image, dtype=np.float32)
+            
+            print(img_array.shape, img_array.max(), img_array.min())
+            # Normalize the image to 0-255 and convert to 8-bit
+            normalized_img = (255 * (img_array - img_array.min()) / (img_array.max() - img_array.min())).astype(np.uint8)
+            print(normalized_img.shape, normalized_img.max(), normalized_img.min())
+            # Create a new image from the normalized array and save it
+            image = Image.fromarray(normalized_img)
+
 
         # work around this bug: https://github.com/python-pillow/Pillow/issues/3973
         image = _apply_exif_orientation(image)
         return convert_PIL_to_numpy(image, format)
-
 
 def check_image_size(dataset_dict, image):
     """
