@@ -103,16 +103,14 @@ def main() -> None:
     logger.info("Arguments: " + str(args))
     # print("Arguments:", args)
     args.config_file = "../configs/COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml"
-    args.config_file = "../configs/COCO-InstanceSegmentation/mask_rcnn_R_101_FPN_3x.yaml"
+    # args.config_file = "../configs/COCO-InstanceSegmentation/mask_rcnn_R_101_FPN_3x.yaml"
     # args.config_file = "../configs/COCO-PanopticSegmentation/panoptic_fpn_R_101_3x.yaml"
-    args.input = ["/Volumes/16TB_RAID_0/Scroll4/PHerc1667.volpkg/volumes/20231107190228/05000.tif", 
-                  "/Volumes/16TB_slow_RAID_0/Scroll3/PHerc0332.volpkg/volumes/20231027191953/05000.tif",
-                  "/Volumes/16TB_RAID_0/Scroll4/PHerc1667.volpkg/volumes/20231117161658/02000.tif",
-                  "/Users/jamesdarby/Documents/McGill/ECSE 415 Computer Vision/CompVisA4/mtl_street_scene.jpg"]
+    args.input = ["../test_data/05000.png", 
+                  "../test_data/mtl_street_scene.jpg"]
     # args.input = ["/Volumes/16TB_RAID_0/Scroll4/PHerc1667.volpkg/volumes/20231117161658/02000.tif"]
-    args.output = f"/Users/jamesdarby/Desktop/detect-a-scroll/"
+    args.output = f"./outputs"
     args.opts = ["MODEL.WEIGHTS", "detectron2://COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x/137849600/model_final_f10217.pkl"]
-    args.opts = ["MODEL.WEIGHTS", "../weights/model_final_f6e8b1.pkl"] #mask_rcnn_R_101_FPN_3x.yaml weights
+    # args.opts = ["MODEL.WEIGHTS", "../weights/model_final_f6e8b1.pkl"] #mask_rcnn_R_101_FPN_3x.yaml weights
     # args.opts = ["MODEL.WEIGHTS", "../weights/model_final_cafdb1.pkl"] #panoptic_fpn_R_101_3x.yaml weights
     print("Arguments:", args)
 

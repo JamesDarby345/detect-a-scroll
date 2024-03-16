@@ -5,7 +5,7 @@ inference_test_output
 
 /weights
 /checkpoints
-
+/test_data
 
 # *.png
 *.json
