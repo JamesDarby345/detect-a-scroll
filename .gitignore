@@ -7,7 +7,7 @@ inference_test_output
 /checkpoints
 
 
-*.png
+# *.png
 *.json
 *.diff
 *.jpg
