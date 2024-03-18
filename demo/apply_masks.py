@@ -76,16 +76,28 @@ def apply_mask(image, mask):
     masked_image = cv2.bitwise_and(image, image, mask=mask)
     return masked_image
 
-cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_0003999.pth")  # path to the model we just trained
+
+
+#CHANGE these variables
+input_folder="/Users/jamesdarby/Documents/VesuviusScroll/GP/Vesuvius_Data_Download/Scroll4_PHerc_1667/PHerc1667.volpkg/volumes/20231107190228/"
+range_of_images = range(0, 501)
+# range_of_images = range(10000, 20000)
+final_folder = "masked_volumes"
+output_folder = f"/Users/jamesdarby/Documents/VesuviusScroll/GP/Vesuvius_Data_Download/Scroll4_PHerc_1667/{final_folder}/"
+tif_name_length = 5
+#better for end of scrolls
+model_checkpoint = "larger_instance_run/model_ends_of_scroll.pth" 
+#better for middle of scrolls
+# model_checkpoint = "model_0000999.pth" 
+dilation_percentage = 4
+mask_recalculation_interval = 10
+
+os.makedirs(output_folder, exist_ok=True)
+cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, model_checkpoint)  # path to the model we just trained
 cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5   # set a custom testing threshold
 predictor = DefaultPredictor(cfg)
 
-#path to the folder containing the tif images
-input_folder="/Users/jamesdarby/Documents/VesuviusScroll/GP/Vesuvius_Data_Download/Scroll4_PHerc_1667/PHerc1667.volpkg/volumes/20231107190228/"
-range_of_images = range(0, 500)
-output_folder = "/Users/jamesdarby/Documents/VesuviusScroll/GP/Vesuvius_Data_Download/Scroll4_PHerc_1667/masked_volumes/"
-tif_name_length = 5
-
+count = 0
 for i in range_of_images:
     file_name = str(i).zfill(tif_name_length) + ".tif"
     file_path = input_folder + file_name
@@ -96,18 +108,21 @@ for i in range_of_images:
     # so the resulting image doesnt lose the uint16 percision
     try:
         img = tifffile.imread(file_path) #to apply mask to and save
-        cvimg = cv2.imread(file_path) #for model input
+        if count % mask_recalculation_interval == 0:
+            cvimg = cv2.imread(file_path)
     except Exception as e:
         print(e)
+        # count += 1
         continue
 
-    outputs = predictor(cvimg)
-
-    masks = outputs["instances"].pred_masks.cpu().numpy()
-    combined_mask = np.logical_or.reduce(masks).astype(np.uint8)
-    dilated_mask = dilate_mask(combined_mask, 1.5)
+    if count % mask_recalculation_interval == 0:
+        outputs = predictor(cvimg)
+        masks = outputs["instances"].pred_masks.cpu().numpy()
+        combined_mask = np.logical_or.reduce(masks).astype(np.uint8)
+        dilated_mask = dilate_mask(combined_mask, dilation_percentage)
 
     masked_image = apply_mask(img, dilated_mask)
 
     write_image_tifffile(output_folder + file_name, masked_image)
     print("masked ", file_name)
+    count += 1
