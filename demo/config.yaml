@@ -102,7 +102,7 @@ dictitems:
           __immutable__: false
           __new_allowed__: false
           __renamed_keys__: {}
-      DEVICE: cuda
+      DEVICE: cpu
       FPN: !!python/object/new:detectron2.config.config.CfgNode
         dictitems:
           FUSE_TYPE: sum
@@ -398,7 +398,7 @@ dictitems:
       __immutable__: false
       __new_allowed__: false
       __renamed_keys__: {}
-  OUTPUT_DIR: /home/james/Documents/VS/detect-a-scroll/checkpoints
+  OUTPUT_DIR: ../checkpoints
   SEED: -1
   SOLVER: !!python/object/new:detectron2.config.config.CfgNode
     dictitems:
