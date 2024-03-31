@@ -1,4 +1,4 @@
-#Detect a scroll
+# Detect a scroll
 
 This repo has the tools I used to create the masked data for Scrolls3 & 4. It isnt polished but works, below is the relevant files, model checkpoint and dataset used, afterwards I will explain why I did this instead of using the SAM implementation from april/may 2023.
 
