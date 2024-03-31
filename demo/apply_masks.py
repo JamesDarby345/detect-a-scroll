@@ -116,9 +116,9 @@ This will use that good mask on all the images in that range. Then repeat this p
 #CHANGE these variables
 
 #Scroll 1
-input_folder = "/Volumes/16TB_RAID_0/Scroll1/Scroll1.volpkg/volumes/20230205180739" 
-output_folder = "/Volumes/16TB_RAID_0/Scroll1/masked_volumes"
-output_folder_masks = "/Volumes/16TB_RAID_0/Scroll1/volume_masks"
+# input_folder = "/Volumes/16TB_RAID_0/Scroll1/Scroll1.volpkg/volumes/20230205180739" 
+# output_folder = "/Volumes/16TB_RAID_0/Scroll1/masked_volumes"
+# output_folder_masks = "/Volumes/16TB_RAID_0/Scroll1/volume_masks"
 
 #Scroll 3
 # input_folder = "/Volumes/16TB_slow_RAID_0/Scroll3/PHerc0332.volpkg/volumes/20231027191953" 
@@ -126,9 +126,9 @@ output_folder_masks = "/Volumes/16TB_RAID_0/Scroll1/volume_masks"
 # output_folder_masks = f"/Volumes/16TB_slow_RAID_0/Scroll3/volume_masks"
 
 #Scroll 4
-# input_folder = "/Volumes/16TB_RAID_0/Scroll4/PHerc1667.volpkg/volumes/20231107190228"
-# output_folder = "/Volumes/16TB_slow_RAID_0/Scroll4/masked_volumes"
-# output_folder_masks = "/Volumes/16TB_slow_RAID_0/Scroll4/volume_masks"
+input_folder = "/Volumes/16TB_RAID_0/Scroll4/PHerc1667.volpkg/volumes/20231107190228"
+output_folder = "/Volumes/16TB_slow_RAID_0/Scroll4/masked_volumes"
+output_folder_masks = "/Volumes/16TB_slow_RAID_0/Scroll4/volume_masks"
 
 tif_name_length = 5
 
@@ -139,9 +139,9 @@ range_of_images = range(13640, 13806)
 # range_of_images = chain(range(0, 800), range(22000, 22941))
 
 range_of_images = range(13600, 13670)
-range_of_images = range(14205, 14220)
+range_of_images = range(0, 100)
 
-model_checkpoint = "model_new_final.pth"
+model_checkpoint = "model_0050999.pth"
 
 dilation_percentage = 3 #~1.5 for end of scrolls, 4+ for middle of scrolls
 mask_recalculation_interval = 20 #how many volumes to skip before recalculating the mask
@@ -152,14 +152,19 @@ apply_masks_jpg = True #if true, will apply the masks to the images and save the
 manual_erode = False #if true, will erode the mask by the amount in erode_amount every mask recalculation interval instead of predicting with model.
 erode_amount = 0.1 #percentage to erode the mask by
 
-os.makedirs(output_folder, exist_ok=True)
-os.makedirs(output_folder_masks, exist_ok=True)
+if apply_masks_tif:
+    os.makedirs(output_folder, exist_ok=True)
+if apply_masks_jpg:
+    os.makedirs(output_folder+"_jpg", exist_ok=True)
+if save_masks:
+    os.makedirs(output_folder_masks, exist_ok=True)
 cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, model_checkpoint)  # path to the model we just trained
 cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.1   # set a custom testing threshold
 predictor = DefaultPredictor(cfg)
 final_mask = None
 
 count = 0
+start_time = time.time()
 for i in range_of_images:
     file_name = str(i).zfill(tif_name_length) + ".tif"
     file_path = input_folder + "/" + file_name
@@ -194,7 +199,6 @@ for i in range_of_images:
         masked_image = apply_mask(img, final_mask)
 
         if apply_masks_jpg:
-            os.makedirs(output_folder + "_jpg", exist_ok=True)
             write_image_cv2(output_folder + "_jpg" + "/" + file_name.replace(".tif", ".jpg"), masked_image)
             print("masked ", file_name, " as jpg")
 
@@ -202,3 +206,5 @@ for i in range_of_images:
             write_image_tifffile(output_folder + "/" + file_name, masked_image)
             print("masked ", file_name, " as tif")
     count += 1
+
+print(f"Total time: {time.time() - start_time}")
