@@ -23,7 +23,8 @@ Additionally I stopped being stupid and converted all the volumes from .tif's to
 
 Essentially this new approach of converting the volumes to .jpg, creating the masks with a lightweight finetuned model and applying them to the .tif allows the masking computation to be done in a single day or less instead of babysat over a week. This assumes you have the storage space to have the full volume downloaded at once. Now the only bottleneck is in the upload & download. In theory the process could just be run on the server to get around that as well, though setting up detectron2, as with most 'fancy' models is a pain to do. Anouther approach could be converting volumes to .jpg on the server, downloading those much faster, creating unapplied masks as .png, uploading those and applying them with a script on the server without having to upload/download full .tif volumes (a multi-day undertaking). That way the masks could be inspected locally on the .jpg files as well if deemed necessary.
 
-Though the finetuned model doesnt make any major mistakes, I have redone some masks (by generating them on different files as I only make a maske every ~10 volumes) just to clean up some places were non-scroll pieces were masked as scroll. I have seen no failure cases of large/noticeable amounts of scroll being masked as not scroll yet, unlike the SAM approach, though thats no gurantee it couldnt happen, espcially with new data that looks substantially different.
+Though the finetuned model doesnt make any major mistakes, I have redone some masks (by generating them on different files as I only make a maske every ~10 volumes) just to clean up some places were non-scroll pieces were masked as scroll. I have seen no failure cases of large/noticeable amounts of scroll being masked as not scroll yet, unlike the SAM approach, though thats no gurantee it couldnt happen, especially with new data that looks substantially different.
+
 
 
 
