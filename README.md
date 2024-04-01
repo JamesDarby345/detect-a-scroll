@@ -23,7 +23,7 @@ Additionally I stopped being stupid and converted all the volumes from .tif's to
 
 Essentially this new approach of converting the volumes to .jpg, creating the masks with a lightweight finetuned model and applying them to the .tif allows the masking computation to be done in a single day or less instead of babysat over a week. This assumes you have the storage space to have the full volume downloaded at once. Now the only bottleneck is in the upload & download. In theory the process could just be run on the server to get around that as well, though setting up detectron2, as with most 'fancy' models is a pain to do. Anouther approach could be converting volumes to .jpg on the server, downloading those much faster, creating unapplied masks as .png, uploading those and applying them with a script on the server without having to upload/download full .tif volumes (a multi-day undertaking). That way the masks could be inspected locally on the .jpg files as well if deemed necessary.
 
-
+The observed behaviour after masking Scroll 3 & 4 is that unlike SAM the finetuned model doesnt have any major failures were large portions of scroll are masked out in favour of some random part of the background. That being siad it isnt perfect as some smaller portions, especially near the edges of the scroll, or the ends, can get accidentally masked, but that would be ~ <0.1% of all the papyrus were letters are probably unrecoverable anyway. For the data masking & upload of Scroll 3 & 4I manually inspected and corrected the instances of this I came across by running the code on a different slice and dilating the mask more aggresively in these areas.
 
 
 <img src=".github/Detectron2-Logo-Horz.svg" width="300" >
